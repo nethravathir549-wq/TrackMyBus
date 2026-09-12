@@ -1,35 +1,31 @@
-// TrackMyBus - Basic JavaScript
+document.getElementById("searchButton").addEventListener("click", async function () {
 
-// Track Bus button
-const trackButton = document.querySelector(".hero button");
-
-trackButton.addEventListener("click", function () {
-    alert("Bus tracking feature will be available soon!");
-});
-
-
-// Search Bus
-const searchButton = document.querySelector(".search button");
-const busInput = document.querySelector(".search input");
-
-searchButton.addEventListener("click", function () {
-
-    const busNumber = busInput.value.trim();
+    const busNumber = document.getElementById("busNumber").value;
 
     if (busNumber === "") {
-        alert("Please enter a bus number.");
-    } else {
-        alert("Searching for bus: " + busNumber);
+        alert("Please enter a bus number");
+        return;
     }
 
-});
+    try {
+        const response = await fetch(
+            `http://127.0.0.1:5000/api/buses/${busNumber}`
+        );
 
+        const data = await response.json();
 
-// Allow Enter key to search
-busInput.addEventListener("keypress", function (event) {
+        if (response.ok) {
+            alert(
+                "Bus: " + data.bus_number +
+                "\nRoute: " + data.route +
+                "\nLocation: " + data.location +
+                "\nStatus: " + data.status
+            );
+        } else {
+            alert(data.error);
+        }
 
-    if (event.key === "Enter") {
-        searchButton.click();
+    } catch (error) {
+        alert("Unable to connect to the server");
     }
-
 });
